@@ -1,15 +1,16 @@
 <?php
 /*
-Plugin Name: WordPress TinyMCE Config
+Plugin Name: WP TinyMCE Config
 Plugin URI:  https://github.com/simonrcodrington/Introduction-to-WordPress-Plugins---Location-Plugin
-Description: TinyMCE Config provides a way to easily add/remove available tinymce plugins, as well as custom ones! Just add them to your plugins folder > mce-plugins and then enable them from the settings!
+Description: TinyMCE Config provides a way to easily add/remove available tinymce plugins, as well as custom ones! Just add them to your plugins folder > custom-plugins and then enable them from the settings!
 Version:     1.0.0
 Author:      Andres O. Serrano
-Author URI:  http://andreswebdev.com
-License:     GPL2
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Author URI:  https://github.com/elysium001/
+License:     MIT
+License URI: https://github.com/elysium001/tinymce-config/blob/master/LICENSE
 */
 defined( 'ABSPATH' ) or die( 'Nope, not accessing this' );
+require_once "inc/options-page.php";
 
 class wp_tinymce_config extends wp_tinymce_options_page {
 
@@ -21,9 +22,11 @@ class wp_tinymce_config extends wp_tinymce_options_page {
         // Load the TinyMCE plugin : editor_plugin.js (wp2.5)
         //add_filter( 'mce_external_plugins', array($this,'tmc_custom_mce_buttons') );
         $this->option = get_option( $this->option_name );
+        $wp_tinymce_options_page = new wp_tinymce_options_page();
+
         add_filter( 'tiny_mce_before_init', array($this,'tmc_tinymce_settings') );
 
-        add_filter( 'mce_buttons_1', array($this,'tmc_mce_buttons_1') );
+        add_filter( 'mce_buttons', array($this,'tmc_mce_buttons_1') );
         add_filter( 'mce_buttons_2', array($this,'tmc_mce_buttons_2') );
         add_filter( 'mce_buttons_3', array($this,'tmc_mce_buttons_3') );
         add_filter( 'mce_buttons_4', array($this,'tmc_mce_buttons_4') );
@@ -57,6 +60,7 @@ class wp_tinymce_config extends wp_tinymce_options_page {
         /**
          * Add in a core button that's disabled by default
          */
+        $buttons = [];
         $buttons[] = 'superscript';
         $buttons[] = 'subscript';
 
@@ -127,7 +131,5 @@ class wp_tinymce_config extends wp_tinymce_options_page {
 }
 
 if( is_admin() ){
-    require_once "inc/data.php";
-    require_once "inc/options-page.php";
     $wp_tinymce_config = new wp_tinymce_config;
 }

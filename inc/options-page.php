@@ -1,6 +1,7 @@
 <?php
 
 defined( 'ABSPATH' ) or die( 'Nope, not accessing this' );
+require_once "data.php";
 
 class wp_tinymce_options_page extends wp_tmc_data {
 /**
@@ -46,7 +47,7 @@ class wp_tinymce_options_page extends wp_tmc_data {
             <form method="post" action="options.php">
             <?php
                 // This prints out all hidden setting fields
-                settings_fields( 'my_option_group' );
+                settings_fields( 'tmc_group' );
                 do_settings_sections( $this->option_name );
                 submit_button();
             ?>
@@ -61,8 +62,8 @@ class wp_tinymce_options_page extends wp_tmc_data {
     public function page_init()
     {        
         register_setting(
-            'my_option_group', // Option group
-            'my_option_name', // Option name
+            'tmc_group', // Option group
+            $this->option_name, // Option name
             array( $this, 'sanitize' ) // Sanitize
         );
 
@@ -73,36 +74,36 @@ class wp_tinymce_options_page extends wp_tmc_data {
             $this->option_name // Page
         );  
 
-        add_settings_fields(
+        add_settings_field(
             'r1',
-            'Plugins List',
+            'First Row',
             array( $this, 'print_checkboxes' ),
             $this->option_name,
             $this->option_name,
             'first_row'
         );
 
-        add_settings_fields(
+        add_settings_field(
             'r2',
-            'Plugins List',
+            'Second Row',
             array( $this, 'print_checkboxes' ),
             $this->option_name,
             $this->option_name,
             'second_row'
         );
 
-        add_settings_fields(
+        add_settings_field(
             'r3',
-            'Plugins List',
+            'Third Row',
             array( $this, 'print_checkboxes' ),
             $this->option_name,
             $this->option_name,
             'third_row'
         );
 
-        add_settings_fields(
+        add_settings_field(
             'r4',
-            'Plugins List',
+            'Fourth Row',
             array( $this, 'print_checkboxes' ),
             $this->option_name,
             $this->option_name,
@@ -111,7 +112,7 @@ class wp_tinymce_options_page extends wp_tmc_data {
 
         add_settings_field(
             'first_row', // ID
-            'first row', // Title 
+            'first row order', // Title 
             array( $this, 'row_order_callback' ), // Callback
             $this->option_name, // Page
             $this->option_name, // Section
@@ -120,7 +121,7 @@ class wp_tinymce_options_page extends wp_tmc_data {
 
         add_settings_field(
             'second_row', // ID
-            'second row', // Title 
+            'second row order', // Title 
             array( $this, 'row_order_callback' ), // Callback
             $this->option_name, // Page
             $this->option_name, // Section
@@ -129,7 +130,7 @@ class wp_tinymce_options_page extends wp_tmc_data {
         
         add_settings_field(
             'third_row', // ID
-            'third row', // Title 
+            'third row order', // Title 
             array( $this, 'row_order_callback' ), // Callback
             $this->option_name, // Page
             $this->option_name, // Section
@@ -138,20 +139,12 @@ class wp_tinymce_options_page extends wp_tmc_data {
         
         add_settings_field(
             'fourth_row', // ID
-            'fourth row', // Title 
+            'fourth row order', // Title 
             array( $this, 'row_order_callback' ), // Callback
             $this->option_name, // Page
             $this->option_name, // Section
             'fourth_row'           
-        );  
-
-        add_settings_field(
-            'title', 
-            'Title', 
-            array( $this, 'title_callback' ), 
-            $this->option_name, 
-            $this->option_name
-        );      
+        ); 
     }
 
     /**
@@ -193,6 +186,7 @@ class wp_tinymce_options_page extends wp_tmc_data {
         printf(
             '<input type="text" id="%s" name="%s[%s]" value="%s" />',
             $this->option_name,
+            $this->option_name,
             $row_number,
             isset( $this->options[$row_number] ) ? esc_attr( $this->options[$row_number]) : ''
         );
@@ -203,11 +197,11 @@ class wp_tinymce_options_page extends wp_tmc_data {
         echo '<ul id="available-plugins">';
         foreach ($this->get_available_plugins() as $option_value => $option_name) {
 			$checked = " ";
-			if (get_option($this->option_name[$row][$option_name])) {
+			if (get_option($this->option_name.'['.$row.']['.$option_name.']')) {
 				$checked = " checked='checked' ";
 			}
 			echo "<li>\n";
-			echo '<input type="checkbox" name="'.$this->option_name[$row][$option_name].'" value="true" '.$checked.' class="'.$option_name.'" />'.$option_name."\n";
+			echo '<input type="checkbox" name="'.$this->option_name.'['.$row.']['.$option_name.']'.'" value="true" '.$checked.' class="'.$option_name.'" />'.$option_name."\n";
 			echo "</li>\n";
         }
         echo '</ul>';
@@ -224,7 +218,3 @@ class wp_tinymce_options_page extends wp_tmc_data {
         );
     }
 }
-
-if( is_admin() )
-    require_once "data.php";
-    $wp_tinymce_options_page = new wp_tinymce_options_page();

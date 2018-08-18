@@ -7,10 +7,6 @@ class wp_tmc_data {
     /**
      * Start up
      */
-    public function __construct()
-    {
-        
-    }
 
     public function get_available_plugins()
     {
