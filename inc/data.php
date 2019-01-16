@@ -10,7 +10,7 @@ class wp_tmc_data {
 
     public function get_available_plugins()
     {
-        return array_merge($this->get_default_plugins(),$this->get_custom_plugins());   
+        return array_merge($this->get_default_plugins(),$this->get_custom_plugins());
     }
 
     public function get_default_plugins()
@@ -28,23 +28,23 @@ class wp_tmc_data {
         }
         $plugins = array_merge($extra_plugins,$default_plugins);
         sort($plugins);
-        return $plugins;        
+        return $plugins;
     }
 
     public function get_custom_plugins()
     {
         $plugins = array();
-        $dir = plugin_dir_path( __FILE__ ) . "custom/plugins/";
+        $dir = plugin_dir_path( __FILE__ ) . "custom/plugins/"; //TODO: update for multisite and standard wp file structure.
         if( file_exists($dir) ){
             foreach(scandir($dir, 0) as $file)
             {
                $plugins[] = $file;
             }
-        }        
+        }
         return $plugins;
     }
-    
 
 
-  
+
+
 }
